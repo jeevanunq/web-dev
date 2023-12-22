@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tab 1</title>
+    <style>
+        /* Inline CSS (replace with your styles) */
+        .pdf-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .pdf-list {
+            margin-bottom: 20px;
+        }
+
+        .pdf-list button {
+            margin: 5px;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .pdf-list button:hover {
+            background-color: #0056b3;
+        }
+
+        .pdf-viewer {
+            width: 80%;
+            max-width: 800px;
+            height: 500px;
+        }
+
+        #pdfFrame {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="pdf-container">
+    <div class="pdf-list">
+        <button onclick="loadPdf('1_Design_Specification.pdf')">PDF 1</button>
+        <button onclick="loadPdf('2_ISPL.pdf')">PDF 2</button>
+        <button onclick="loadPdf('3_MRLS.pdf')">PDF 3</button>
+        <button onclick="loadPdf('4_SMTs_&_STEs.pdf')">PDF 4</button>
+        <button onclick="loadPdf('5_User_HandBook.pdf')">PDF 5</button>
+    </div>
+    <div class="pdf-viewer">
+        <iframe id="pdfFrame" width="100%" height="100%" frameborder="0"></iframe>
+    </div>
+</div>
+
+<script>
+    // Inline JavaScript (replace with your logic)
+    function loadPdf(pdfFilename) {
+        var pdfFrame = document.getElementById("pdfFrame");
+        var pdfPath = `pdf/${pdfFilename}`;
+        pdfFrame.src = pdfPath;
+
+        // Example: Search for the term "example" after loading the PDF
+        searchInPdf(pdfFrame, "example");
+    }
+
+    function searchInPdf(pdfFrame, searchTerm) {
+        // Initialize PDF.js (replace with your path)
+        pdfjsLib.GlobalWorkerOptions.workerSrc = "E:/AAKASH PROJECT-JEEVAN/pdf.js-master/src/pdf.worker.js/path/to/pdf.worker.js";
+
+        // Load the PDF using PDF.js
+        pdfjsLib.getDocument(pdfFrame.src).promise.then(function (pdfDoc) {
+            // Loop through each page
+            for (var pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+                // Get the text content of the page
+                pdfDoc
+                    .getPage(pageNum)
+                    .then(function (page) {
+                        return page.getTextContent();
+                    })
+                    .then(function (textContent) {
+                        // Check if the search term is present on the page
+                        if (textContent.items.some((item) => item.str.includes(searchTerm))) {
+                            console.log("Text found in PDF!");
+                            // Point to the found word (you can customize this part)
+                            // Example: Highlight the word or scroll to the relevant position
+                            alert("Text found in PDF! Word: " + searchTerm);
+                        } else {
+                            console.log("Text not found in PDF!");
+                        }
+                    });
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

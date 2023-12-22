@@ -1,0 +1,323 @@
+<!-- home.html -->
+
+import * as pdfjsLib from "./pdf.js-master/src/pdf";
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Navbar styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+        }
+    
+        header {
+            background-color: #3c835e;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+    
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    
+        nav button {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 10px 15px;
+            transition: background-color 0.3s ease;
+        }
+    
+        nav button:hover {
+            background-color: #555;
+        }
+    
+        .search-bar {
+            display: flex;
+            align-items: center;
+            margin-top: 10px; /* Adjust as needed */
+        }
+    
+        input[type="text"] {
+            padding: 8px;
+            margin-right: 5px;
+        }
+    
+        .search-button {
+            padding: 8px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+    
+        .search-button:hover {
+            background-color: #0056b3;
+        }
+    
+        /* Tab1 styles (combined with previous styles) */
+        .pdf-container {
+            display: flex;
+    height: 100vh;/* Adjust as needed */
+        }
+    
+        .pdf-list {
+            display: flex;
+    flex-direction: column;
+    padding: 10px;/* Adjust as needed */
+        }
+    
+        .pdf-list button {
+            margin-bottom: 10px;
+    padding: 8px;
+    cursor: pointer;
+        }
+    
+        .pdf-list button:hover {
+            background-color: #0056b3;
+        }
+    
+        .pdf-viewer {
+            flex: 1; /* Take up remaining space */
+    padding: 10px;
+        }
+    
+        #pdfFrame {
+            width: 100%;
+            height: 100%;
+        }
+
+        #fullImage {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#fullImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image covers the entire container */
+}
+
+#welcomeText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff; /* Adjust text color as needed */
+    font-size: 24px; /* Adjust font size as needed */
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.7); /* Adjust background color and opacity as needed */
+    padding: 10px; /* Adjust padding as needed */
+    border-radius: 5px; /* Optional: Add border-radius for rounded corners */
+}
+.search-highlight {
+    background-color: yellow;
+    font-weight: bold;
+    /* Add any other styling as needed */
+}
+
+
+    </style>
+    
+    <title>Your Web App - Home</title>
+</head>
+<body class="home-page">
+
+<header>
+    <h1>AAKASH MISSILE PROJECT</h1>
+    <nav>
+        <button id="tab3" class="tab-button" onclick="changeTab('tab4')">Home</button>
+        <button id="tab1" class="tab-button" onclick="changeTab('tab1')">Manuals</button>
+        <button id="tab2" class="tab-button" onclick="changeTab('tab2')">illustrations</button>
+        <button id="tab3" class="tab-button" onclick="changeTab('tab3')">spares</button>
+
+        <div class="search-bar">
+            <input type="text" placeholder="Search">
+            <button class="search-button" onclick="search()">Search</button>
+        </div>
+    </nav>
+</header>
+
+<!-- Content for the home page -->
+<div class="content" id="tabContent">
+    <!-- Initial content will be replaced based on the selected tab -->
+</div>
+
+<script type="text/javascript" src="pdf.js-master/src/pdf.js"></script>
+<script type="text/javascript" src="pdf.js-master/src/pdf.worker.js"></script>
+<script>
+    var filecontainer="";
+    function changeTab(tabId) {
+        // Remove the active class from all buttons
+        var buttons = document.querySelectorAll(".tab-button");
+        buttons.forEach((button) => button.classList.remove("active-tab"));
+
+        // Display content based on the selected tab
+        if (tabId === 'tab1') {
+            document.getElementById("tabContent").innerHTML = `
+                <div class="pdf-container">
+                    <div class="pdf-list">
+                        <button onclick="loadPdf('1 Design Specification (Akash) .pdf')">Design Specification</button>
+                        <button onclick="loadPdf('2 ISPL (Akash)  (1).pdf')">ISPL </button>
+                        <button onclick="loadPdf('3_MRLS_(Akash)[1].pdf')">MRLS</button>
+                    </div>
+                    <div class="pdf-viewer">
+                        <iframe id="pdfFrame" width="100%" height="100%" frameborder="0"></iframe>
+                    </div>
+                </div>
+            `;
+            // Load the first PDF by default
+        
+        } else if (tabId === 'tab2') {
+            // You can add content for Tab 2 here
+            document.getElementById("tabContent").innerHTML = `
+                <p>ContentContent to added</p>
+            `;
+        } else if (tabId === 'tab3') {
+            // You can add content for Tab 3 here
+            document.getElementById("tabContent").innerHTML = `
+                <p>Content to added/p>
+            `;
+        }
+        else if (tabId === 'tab4') {
+            // You can add content for Tab 3 here
+            document.getElementById("tabContent").innerHTML = `
+            <div id="fullImage">
+                <img src="style/missileImage.png" alt="Image for Tab 3">
+                <div id="welcomeText">Welcome to Home</div>
+            </div>
+            
+            `;
+        }
+
+        // Add the active class to the clicked button
+        document.getElementById(tabId).classList.add("active-tab");
+    }
+
+    function search() {
+        var searchTerm = document.querySelector(".search-bar input").value;
+
+        if (searchTerm) {
+            console.log("Searching for:", searchTerm);
+            //searchInPdf(filecontainer,document.getElementById("pdfFrame"),searchTerm);
+            searchInPdf()
+            // Implement your search logic for other tabs
+            console.log("Search logic for other tabs");
+        } else {
+            console.log("Please enter a search term");
+        }
+    }
+    function loadPdf(pdfFilename) {
+    var pdfFrame = document.getElementById("pdfFrame");
+    var pdfPath = `pdf/${pdfFilename}`;
+    pdfFrame.src = pdfPath;
+    pdfFrame.target = "_self"; 
+    filecontainer = pdfFilename
+
+    // Example: Search for the term "example" after loading the PDF
+    searchInPdf(pdfFilename, pdfFrame, "example");
+}
+
+
+function searchInPdf() {
+    var searchTerm = document.querySelector(".search-bar input").value;
+
+    if (searchTerm) {
+        console.log("Searching for:", searchTerm);
+
+        // Remove previous highlights
+        var highlightedElements = document.querySelectorAll(".search-highlight");
+        highlightedElements.forEach(function(element) {
+            element.classList.remove("search-highlight");
+        });
+
+        // Get the current active tab
+        var activeTab = document.querySelector(".active-tab");
+        if (activeTab && activeTab.id === "tab1") {
+            // Get the iframe element
+            var pdfFrame = document.getElementById("pdfFrame");
+
+            // Initialize PDF.js
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf.js-master/src/pdf.worker.js';
+
+            // Load the PDF using PDF.js
+            pdfjsLib.getDocument(pdfFrame.src).promise.then(function (pdfDoc) {
+                // Loop through each page
+                for (var pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+                    // Get the text content of the page
+                    pdfDoc
+                        .getPage(pageNum)
+                        .then(function (page) {
+                            return page.getTextContent();
+                        })
+                        .then(function (textContent) {
+                            // Check if the search term is present on the page
+                            if (textContent.items.some((item) => item.str.includes(searchTerm))) {
+                                console.log("Text found in PDF!");
+
+                                // Highlight the found text on the page
+                                highlightTextOnPage(pageNum, searchTerm);
+                            }
+                        });
+                }
+            });
+        } else {
+            console.log("Search logic for other tabs");
+        }
+
+        // Clear the input field after searching
+        document.querySelector(".search-bar input").value = "";
+    } else {
+        console.log("Please enter a search term");
+    }
+}
+
+function highlightTextOnPage(pageNum, searchTerm) {
+    // Get the page container
+    var pageContainer = document.querySelector(`.pageContainer[data-page-number="${pageNum}"]`);
+
+    // Get the text content of the page
+    var pageText = pageContainer.textContent;
+
+    // Find all occurrences of the search term in the page text
+    var startIndex = 0;
+    while ((startIndex = pageText.indexOf(searchTerm, startIndex)) !== -1) {
+        // Create a range for the found text
+        var range = document.createRange();
+        range.setStart(pageContainer.firstChild, startIndex);
+        range.setEnd(pageContainer.firstChild, startIndex + searchTerm.length);
+
+        // Create a span element to highlight the text
+        var span = document.createElement("span");
+        span.className = "search-highlight";
+        span.appendChild(range.extractContents());
+
+        // Replace the original text with the highlighted span
+        range.insertNode(span);
+
+        // Move the startIndex to the end of the highlighted span
+        startIndex += searchTerm.length;
+    }
+}
+
+
+document.addEventListener("DOMContentLoaded", function() {
+        // Trigger the changeTab function for Tab 3 after the DOM is fully loaded
+        changeTab('tab4');
+    });
+</script>
+
+</body>
+</html>
